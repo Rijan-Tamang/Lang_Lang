@@ -6,7 +6,8 @@ Dhekha(“hello world”);
 Chai hamro language ma hune vayo.
 Aba tyo keywords jasto c ma hunxa ni testai hamro language hune haru chai sochnu parxa k k rakhda thik hola bhanera.
 Yo kasari banaune ta tesko lagi hami sanga euta roadmap jasto xa 
- 
+ <img width="909" height="419" alt="image" src="https://github.com/user-attachments/assets/eccde30b-42b7-4d45-b8a3-8b59cc564790" />
+
 Source code chai abha hamile lekheko file ma hunxa
 For ex:
 File name : helloworld.ll (ll chai hamro extension -> hellowold.c jastai)
