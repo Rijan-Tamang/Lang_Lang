@@ -33,7 +33,6 @@ void check_dots(){
                 if (file_name_with_extension[i] == '.')
                         count_dots += 1;
                 }
-                cout << count_dots;
                 //More than 1 dots in file name shows errors
         if (count_dots != 1){
             cerr << BOLD << "ERROR: "  << RESET << RED << "FILE EXTENSION MILENA HAI!!!!!" << RESET<< endl;
@@ -65,11 +64,10 @@ void extract_file_extension(){
                 else
                         break;
         }
-	cout << file_extension;
 	if (file_extension != "ll"){
 		cerr << BOLD << "ERROR: "  << RESET << RED << "FILE EXTENSION MILENA HAI!!!!!" << RESET<< endl;
                 clog << BOLD << "WARNING:" << RESET << YELLOW << "FILE EXTENSION EG: namaste.ll HUNXA" << RESET << endl;
-        } 
+        }
 		exit(1);
 //More than 1 dots in file name shows errors
 
