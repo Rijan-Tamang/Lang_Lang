@@ -30,6 +30,7 @@ void check_format(int argc){ /*to check if the command in the terminal is correc
 void check_dots(){
         int count_dots = 0;
         for (int i = 0; i < file_name_with_extension.length(); i++){
+		cout << "inside for loop" << endl;
                 if (file_name_with_extension[i] == '.')
                         count_dots += 1;
         }
@@ -37,6 +38,7 @@ void check_dots(){
         if (count_dots != 1){
             cerr << BOLD << "ERROR: "  << RESET << RED << "FILE EXTENSION MILENA HAI!!!!!" << RESET<< endl;
             clog << BOLD << "WARNING:" << RESET << YELLOW << "FILE EXTENSION EG: namaste.ll HUNXA" << RESET << endl;
+	    exit(1);
         }
 
 
@@ -55,6 +57,7 @@ void extract_filename(){
 
 
 void extract_file_extension(){
+
         for (int i = file_name_with_extension.length()-1; i >= 0; i--){
                 if (file_name_with_extension[i] != '.'){
                         file_extension += file_name_with_extension[i];
@@ -62,9 +65,11 @@ void extract_file_extension(){
                 else
                         break;
         }
+	cout << file_extension;
 	if (file_extension != "ll")
 		cerr << BOLD << "ERROR: "  << RESET << RED << "FILE EXTENSION MILENA HAI!!!!!" << RESET<< endl;
                 clog << BOLD << "WARNING:" << RESET << YELLOW << "FILE EXTENSION EG: namaste.ll HUNXA" << RESET << endl;
+		exit(1);
 //More than 1 dots in file name shows errors
 
 }
@@ -86,7 +91,7 @@ void read_file() {
         while(getline(file, line)) {
                 store_content += line + "\n";
         }
-        cout << "\n Store_content " << store_content;
+        cout << "Content In the file " << store_content << endl;
 }
 
 
