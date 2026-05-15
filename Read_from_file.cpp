@@ -35,8 +35,8 @@ void check_dots(){
         }
 //More than 1 dots in file name shows errors
         if (count_dots != 1){
-                cerr << BOLD << "ERROR: "  << RESET << RED << "FILE EXTENSION MILENA HAI!!!!!" << RESET<< endl;
-                clog << BOLD << "WARNING:" << RESET << YELLOW << "FILE EXTENSION EG: namaste.ll HUNXA" << RESET << endl;
+            cerr << BOLD << "ERROR: "  << RESET << RED << "FILE EXTENSION MILENA HAI!!!!!" << RESET<< endl;
+            clog << BOLD << "WARNING:" << RESET << YELLOW << "FILE EXTENSION EG: namaste.ll HUNXA" << RESET << endl;
         }
 
 
@@ -62,6 +62,9 @@ void extract_file_extension(){
                 else
                         break;
         }
+	if (file_extension != "ll")
+		cerr << BOLD << "ERROR: "  << RESET << RED << "FILE EXTENSION MILENA HAI!!!!!" << RESET<< endl;
+                clog << BOLD << "WARNING:" << RESET << YELLOW << "FILE EXTENSION EG: namaste.ll HUNXA" << RESET << endl;
 //More than 1 dots in file name shows errors
 
 }
@@ -76,12 +79,12 @@ void read_file() {
 
         if (!file.is_open()) {
                 cerr << "\nError: Could not open file " << file_name_with_extension << ".ll" << endl;
-                return;
+                exit(1);
         }
 
         string line;
         while(getline(file, line)) {
-                store_content += line;
+                store_content += line + "\n";
         }
         cout << "\n Store_content " << store_content;
 }
