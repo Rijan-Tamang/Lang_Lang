@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <cstdlib>  // for exit()
+#include"./lexer/function.h"
 
 using namespace std;
 
@@ -14,7 +15,8 @@ using namespace std;
 string file_name_with_extension = ""; //this string stores the file name written in commandline without the extension
 string file_name_without_extension = ""; //this string stores the file
 string file_extension = "";
-string store_content = "";
+string store_content="";
+
 
 class message{
     public:
@@ -114,7 +116,7 @@ void read_file(message msg) {
 
 
 
-int main(int argc, char* argv[]){
+void driver_main(int argc, char* argv[]){
 	message msg;
         check_format(argc, msg);
 	file_name_with_extension = argv[1];
@@ -124,6 +126,5 @@ int main(int argc, char* argv[]){
         //cout << "\t" << file_name_without_extension << endl;
 
         read_file(msg);
-        cout << store_content << endl;
-        return 0;
+ //       return 0;
 }
