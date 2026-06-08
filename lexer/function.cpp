@@ -72,11 +72,11 @@ void flushWord(string& word, vector<string>& result){
         for(int i = 0; i < str.size(); i++){
 
             char ch = str[i];
-
+            // Handle identifiers and keywords
             if(isalnum(ch) || ch == '_'){
                 word += ch;
             }
-
+            // Handle string literals
             else if(ch == '"'){
 
                 flushWord(word, result);
@@ -97,17 +97,38 @@ void flushWord(string& word, vector<string>& result){
 
                 result.push_back(literal);
             }
-
-            else{
+            // yaha alphabet , number natra underscore chai aaudaina 
+            // vanesi k aauxa vanda operator haru aauxa
+            else {
                 flushWord(word, result);
-                if(!isspace(ch))
-                    
+
+                char next_ch = (i + 1 < str.size()) ? str[i + 1] : '\0';
+
+                if (ch == '=' && next_ch == '=') {
+                    result.push_back("==");
+                    i++;
+                }
+                else if (ch == '!' && next_ch == '=') {
+                    result.push_back("!=");
+                    i++;
+                }
+                else if (ch == '<' && next_ch == '=') {
+                    result.push_back("<=");
+                    i++;
+                }
+                else if (ch == '>' && next_ch == '=') {
+                    result.push_back(">=");
+                    i++;
+                }
+                else if (!isspace(ch)) {
                     result.push_back(string(1, ch));
+                }
             }
         }
         flushWord(word, result);
         return result;
     }
+
 
     bool isStringLiteral(string& token){
         return token.size() >= 2 && token.front() == '"' && token.back() == '"';

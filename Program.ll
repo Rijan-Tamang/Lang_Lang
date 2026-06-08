@@ -1,6 +1,3 @@
-manaum a,b="Tero"
-bhan("Hello World")
-a == b
-sun(a)
-bhan(a,b)
-
+yedi(age > 18){
+    bhan("Adult");
+}

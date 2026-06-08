@@ -18,7 +18,8 @@ enum TokenType{
     OPERATOR,//9
     COMMENT,//10
     SEMICOLON,//11
-    UNDEFINED//12
+    COMMA,//12
+    UNDEFINED//13
 };
 struct Token{
     TokenType type;
@@ -33,12 +34,11 @@ void Output(){
 int main(int argc, char* argv[]) {
 
     driver_main(argc, argv);
-
-    
     vector<string> src = splitString(store_content);
 
     while (!src.empty()) {
         string token = src.front();
+
         src.erase(src.begin());
         if(find(keywords.begin(), keywords.end(), token) != keywords.end()){
             tokens.push_back({TokenType::KEYWORD, token});
@@ -48,6 +48,8 @@ int main(int argc, char* argv[]) {
             tokens.push_back({TokenType::EQUAL, token});
         } else if(find(operators.begin(), operators.end(), token) != operators.end()){
             tokens.push_back({TokenType::OPERATOR, token});
+        } else if(token == ","){
+            tokens.push_back({TokenType::COMMA, token});
         } else if(token == "("){
             tokens.push_back({TokenType::LEFTPAREN, token});
         } else if(token == ")"){
@@ -65,6 +67,7 @@ int main(int argc, char* argv[]) {
         }else{
             tokens.push_back({TokenType::UNDEFINED, token});
         }
+
     }
     
     // Output tokens
