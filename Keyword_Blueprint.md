@@ -88,7 +88,7 @@ yochai (expression) {
         // code
         vayo;
 
-    abayeiho:
+    abayeiho,vayenavane:
         // code
 }
 ```
