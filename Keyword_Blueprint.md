@@ -95,7 +95,7 @@ yochai (expression) {
 
 #### For Loop
 ```plaintext
-for (initialization; condition; increment) {
+ferini/lata (initialization; condition; increment) {
     // code
 }
 ```
