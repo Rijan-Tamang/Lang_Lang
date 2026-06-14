@@ -175,45 +175,46 @@ Token Lexer::readOperator() {
     string op;
     int startLine = line;
     int startCol = col + 1;
-    
 
-    op += moveonce();
-
+    char c = moveonce();
+    op += c;
     char b = see();
 
-        if(op=="+") return {PLUS_OP,op,startLine,startCol };
-        else if(op=="-") return {MINUS_OP,op,startLine,startCol};
-        else if(op=="/") return {DIVISION_OP,op,startLine,startCol};
-        else if(op=="*") return {MULTIPLICATION_OP,op,startLine,startCol};
-        else if(op=="=") return {ASSIGNMENT_OP,op,startLine,startCol};
+    switch (c) {
+        case '+':
+            if (b == '=') { op += moveonce(); return {ADD_ASSIGNMENT_OP, op, startLine, startCol}; }
+            return {PLUS_OP, op, startLine, startCol};
 
+        case '-':
+            if (b == '=') { op += moveonce(); return {SUB_ASSIGNMENT_OP, op, startLine, startCol}; }
+            return {MINUS_OP, op, startLine, startCol};
 
-        else if(op=="+" && b=='='){
-            op+=moveonce();
-            return {ADD_ASSIGNMENT_OP,op,startLine,startCol};}
-        else if(op=="-"&& b=='='){
-            op+=moveonce();
-            return {SUB_ASSIGNMENT_OP,op,startLine,startCol};}
-        else if(op=="*" && b=='='){
-            op+=moveonce();
-            return {MUL_ASSIGNMENT_OP, op,startLine, startCol};}
+        case '*':
+            if (b == '=') { op += moveonce(); return {MUL_ASSIGNMENT_OP, op, startLine, startCol}; }
+            return {MULTIPLICATION_OP, op, startLine, startCol};
 
-        else if(op=="/" && b=='='){
-            op+=moveonce();
-            return {DIV_ASSIGNMENT_OP, op, startLine,startCol};}
-        else if(op=="%" && b=='='){
-        op+=moveonce();
-        return {MOD_ASSIGNMENT_OP,op , startLine, startCol};}
+        case '/':
+            if (b == '=') { op += moveonce(); return {DIV_ASSIGNMENT_OP, op, startLine, startCol}; }
+            return {DIVISION_OP, op, startLine, startCol};
 
+        case '%':
+            if (b == '=') { op += moveonce(); return {MOD_ASSIGNMENT_OP, op, startLine, startCol}; }
+            return {MODULUS_OP, op, startLine, startCol}; // assumes this enum value exists
 
-        else if (op=="(") return {LEFT_PAREN, op,startLine,startCol};
-        else if(op==")") return {RIGHT_PAREN, op, startLine, startCol};
-        else if (op=="{") return {LEFT_BRECE, op , startLine , startCol};
-        else if(op=="}") return {RIGHT_BRECE, op, startLine, startCol};
-        else if (op=="[") return {LEFT_BRACKET, op, startLine , startCol};
-        else if (op=="]") return { RIGHT_BRACKET , op, startLine, startCol};
-        else if (op==",") return {COMMA,op ,startLine, startCol};
-        else if (op==";") return {SEMICOLAN,op, startLine, startCol};
-        else return {ERROR, "Minlane hai"};
+        case '=':
+            if (b == '=') { op += moveonce(); return {EQUAL_OP, op, startLine, startCol}; } // assumes EQUAL_OP exists
+            return {ASSIGNMENT_OP, op, startLine, startCol};
 
+        case '(': return {LEFT_PAREN, op, startLine, startCol};
+        case ')': return {RIGHT_PAREN, op, startLine, startCol};
+        case '{': return {LEFT_BRECE, op, startLine, startCol};
+        case '}': return {RIGHT_BRECE, op, startLine, startCol};
+        case '[': return {LEFT_BRACKET, op, startLine, startCol};
+        case ']': return {RIGHT_BRACKET, op, startLine, startCol};
+        case ',': return {COMMA, op, startLine, startCol};
+        case ';': return {SEMICOLAN, op, startLine, startCol};
+
+        default:
+            return {ERROR, "Unknown operator '" + op + "'", startLine, startCol};
+    }
 }

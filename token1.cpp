@@ -26,6 +26,7 @@ std::string tokenTypeToString(TokenType t) {
         case RIGHT_BRACKET: return "RIGHT_BRACKET";
         case COMMA: return "COMMA";
         case SEMICOLAN: return "SEMICOLAN";
+        case EQUAL_OP: return "EQUAL_OP";
         
 
         case ERROR: return "ERROR";
