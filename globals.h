@@ -6,7 +6,7 @@
 #include<cctype>
 #include<vector>
 #include<string>
-
+#include<fstream>
 
 #define RESET   "\033[0m"
 #define RED     "\033[31m"
@@ -15,9 +15,9 @@
 
 
 using namespace std;
-string store_content;
+//string store_content;
 
-
+/*
 class message{
     public:
     void Error(std::string errmsg){
@@ -27,7 +27,7 @@ class message{
         cerr<<BOLD<<"WARNING : "<<RESET<<YELLOW<<warnmsg<<RESET<<endl;
     }
 };
-
+*/
 
 bool isNumber(string& token);
 
@@ -38,7 +38,7 @@ bool isIden(string& token);
 vector<string> splitString(string& str);
 
 
-void main_read_from_file();
+void main_read_from_file(int argc, char* argv[]);
 
 
 #endif /* function_h */

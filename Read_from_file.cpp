@@ -1,7 +1,8 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <cstdlib>  // for exit()
+#include "globals.h"
+//#include <iostream>
+//#include <fstream>
+//#include <string>
+//#include <cstdlib>  // for exit()
 
 using namespace std;
 
@@ -114,7 +115,7 @@ void read_file(message msg) {
 
 
 
-int main(int argc, char* argv[]){
+void main_read_from_file(int argc, char* argv[]){
 	message msg;
         check_format(argc, msg);
 	file_name_with_extension = argv[1];
@@ -125,5 +126,5 @@ int main(int argc, char* argv[]){
 
         read_file(msg);
         cout << store_content << endl;
-        return 0;
+//        return 0;
 }
