@@ -1,0 +1,9 @@
+int main(){
+	int haha_horw123 = 123;
+	float b += 222.222;
+	char c == 'haha';
+	printf("lol happy birthday re");
+	return 0;
+	
+
+}
