@@ -18,7 +18,6 @@ std::string tokenTypeToString(TokenType t) {
         case DIV_ASSIGNMENT_OP: return "DIV_ASSINGMENT_OP";
         case MUL_ASSIGNMENT_OP: return "MUL_ASSINGNMENT_OP";
         case MOD_ASSIGNMENT_OP: return "MOD_ASSINGNMENT_OP";
-        case COMPARISON_OP: return "COMPARISON_OP";
         case LEFT_PAREN: return "LEFT_PAREN";
         case RIGHT_PAREN: return "rIGHT_pAREN";
         case LEFT_BRECE: return "LEFT_BRECE";
@@ -27,6 +26,7 @@ std::string tokenTypeToString(TokenType t) {
         case RIGHT_BRACKET: return "RIGHT_BRACKET";
         case COMMA: return "COMMA";
         case SEMICOLAN: return "SEMICOLAN";
+        case EQUAL_OP: return "EQUAL_OP";
         
 
         case ERROR: return "ERROR";

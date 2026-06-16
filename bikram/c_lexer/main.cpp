@@ -1,19 +1,22 @@
+<<<<<<< HEAD
+#include "globals.h"
+
+int main(int argc, char* argv[]){
+	main_read_from_file(argc, argv)
+
+
+}
+=======
 #include <iostream>
 #include "lexer.h"
 #include "token1.h"
 
 using namespace std;
 
-int main(int argc, char* argv[]) {
-    main_read_from_file(argc, argv);
+int main() {
     try {
-        auto tokens = Lexer::fromFile().scan();
-        cout << "Tokens:"<< endl;
-        for (const Token& t : tokens) {
-            cout <<"\""<< t.value <<"\"" << "\t";
-        }
-        cout <<"\n=================================================================================="<<endl;
-        cout <<"Token Details:\n"<< endl;
+        auto tokens = Lexer::fromFile("main.txt").scan();
+
         for (const Token& t : tokens) {
             cout << tokenTypeToString(t.type)
                  << " : " << t.value
@@ -28,3 +31,4 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
+>>>>>>> d71d31fc4e167e8520301252d567386cf2ec15d1

@@ -1,7 +1,8 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <cstdlib>  // for exit()
+#include "globals.h"
+//#include <iostream>
+//#include <fstream>
+//#include <string>
+//#include <cstdlib>  // for exit()
 
 using namespace std;
 
@@ -121,8 +122,9 @@ void main_read_from_file(int argc, char* argv[]){
         extract_filename();
         check_dots(msg);
         extract_file_extension(msg);
-        cout << "\t" << file_name_without_extension << endl;
+        //cout << "\t" << file_name_without_extension << endl;
 
         read_file(msg);
         cout << store_content << endl;
+//        return 0;
 }
