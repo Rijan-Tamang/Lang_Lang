@@ -8,8 +8,8 @@
 using namespace std;
 
 static unordered_set<string> keywords = {
-    "bhan", "sun", "voyo", "jaujau", "firta", "gar","uedi", "tesovaya", "natra","yochai",
-    "yo", "vayanavane", "ferini", "jabasamma"
+    "bhan", "sun", "voyo", "jaujau", "firta", "gar","yedi", "tesovaya", "natra","yochai",
+    "yo", "vayanavane", "ferini", "jabsamma", "yoho" , "aghibad", "abayeiho"
 };
 
 Lexer Lexer::fromFile(const string& filename) {
@@ -205,6 +205,25 @@ Token Lexer::readOperator() {
         case '=':
             if (b == '=') { op += moveonce(); return {EQUAL_OP, op, startLine, startCol}; } // assumes EQUAL_OP exists
             return {ASSIGNMENT_OP, op, startLine, startCol};
+        case '<':
+            if(b== '=') {op+= moveonce(); return {LESS_EQUAL_OP, op, startLine,startCol};}
+            return {LESS_OP, op, startLine, startCol};
+        case '>':
+            if(b== '=') {op+=moveonce(); return{GREATER_EQUAL_OP, op, startLine, startCol};}
+            return {GREATER_OP, op , startLine, startCol};
+        case '&':
+            if (b == '&') { op += moveonce(); return {AND_OP, op, startLine, startCol}; }
+            return {ERROR, "Unknown operator '" + op + "'", startLine, startCol};
+
+        case '|':
+            if (b == '|') { op += moveonce(); return {OR_OP, op, startLine, startCol}; }
+            return {ERROR, "Unknown operator '" + op + "'", startLine, startCol};
+
+        case '!':
+            if (b == '=') { op += moveonce(); return {NOT_EQUAL_OP, op, startLine, startCol}; }
+            return {NOT_OP, op, startLine, startCol};
+
+
 
         case '(': return {LEFT_PAREN, op, startLine, startCol};
         case ')': return {RIGHT_PAREN, op, startLine, startCol};
@@ -214,6 +233,7 @@ Token Lexer::readOperator() {
         case ']': return {RIGHT_BRACKET, op, startLine, startCol};
         case ',': return {COMMA, op, startLine, startCol};
         case ';': return {SEMICOLAN, op, startLine, startCol};
+         case ':': return {COLAN, op, startLine, startCol};
 
         default:
             return {ERROR, "Unknown operator '" + op + "'", startLine, startCol};

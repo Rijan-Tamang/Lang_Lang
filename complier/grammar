@@ -1,0 +1,55 @@
+program         -> statement* END
+
+statement       -> decleration | block | returnStatement | exprStatement | emptyStatement
+                  | printStatement | inputStatement | functiondef | functiondec
+                  | ifStatement | switchStatement | whileStatement | dowhileStatement | forStatement
+                  | breakstatement | continueStatement
+
+decleration     -> "yoho" IDENTIFIER ("=" expression)? ("," IDENTIFIER ("=" expression)?)* ";"
+block           -> "{" statement* "}"
+returnStatement -> "firta" expression? ";"
+exprStatement   -> (assignment | call) ";"   /* see note below - not any expression */
+breakstatement  -> "voyo" ";"
+continueStatement -> "aghibad" ";"
+emptyStatement  -> ";"
+functiondec     -> IDENTIFIER "(" paramlist? ")" ";"
+
+functiondef     -> IDENTIFIER "(" paramlist? ")" block
+paramlist       -> param ("," param)*
+param           -> "yoho" IDENTIFIER
+
+printStatement  -> "bhan" "(" (expression ("," expression)*)? ")" ";"
+inputStatement  -> "sun"  "(" STRING ("," IDENTIFIER)* ")" ";"
+
+ifStatement     -> "yedi" "(" expression ")" statement
+                    ("tesovaya" "(" expression ")" statement)*
+                    ("natra" statement)?
+
+switchStatement -> "yochai" "(" expression ")" "{"
+                       caseClause*
+                       defaultClause?
+                   "}"
+caseClause      -> "yo" (INT_NO | FLOAT_NO | IDENTIFIER) ":" statement*
+defaultClause   -> "abayeiho" ":" statement*
+
+whileStatement  -> "jabsamma" "(" expression ")" block
+
+dowhileStatement -> "gar" block "jabsamma" "(" expression ")" ";"
+
+forStatement    -> "ferini" "(" (decleration | exprStatement | ";")
+                              expression? ";"
+                              expression? ")" block
+
+expression      -> assignment
+assignment      -> IDENTIFIER ASSIGN_OP assignment | logicalOr
+logicalOr       -> logicalAnd ("||" logicalAnd)*
+logicalAnd      -> equality ("&&" equality)*
+equality        -> relational (("=="|"!=") relational)*
+relational      -> additive (("<"|"<="|">"|">=") additive)*
+additive        -> multiplicative (("+"|"-") multiplicative)*
+multiplicative  -> unary (("*"|"/"|"%") unary)*
+unary           -> ("-"|"+"|"!") unary | call
+call            -> primary ( "(" arguments? ")" )*
+arguments       -> expression ("," expression)*
+primary         -> INT_NO | FLOAT_NO | STRING | IDENTIFIER | "(" expression ")"
+
