@@ -12,13 +12,13 @@ void SemanticAnalyzer::popScope() {
     scopes.pop_back();
 }
 
-bool SemanticAnalyzer::declareVar(const string& name, const string& type, int line, int col) {
+bool SemanticAnalyzer::declareVar(const string& name, int line, int col) {
     auto& current = scopes.back();
     if (current.count(name)) {
         error(line, col, "redeclaration of variable '" + name + "' in the same scope");
         return false;
     }
-    current[name] = VarSymbol{type, line, col};
+    current[name] = VarSymbol{line, col};
     return true;
 }
 
@@ -36,10 +36,6 @@ void SemanticAnalyzer::error(int line, int col, const string& msg) {
 
 void SemanticAnalyzer::warn(int line, int col, const string& msg) {
     diags.push_back({DiagSeverity::Warning, msg, line, col});
-}
-
-bool SemanticAnalyzer::isNumeric(const string& type) const {
-    return type == "int" || type == "float";
 }
 
 // ---------------- entry point ----------------
@@ -107,11 +103,10 @@ void SemanticAnalyzer::visitStatement(Node* node) {
     switch (node->kind) {
         case NodeKind::VarDecl: {
             for (auto& idNode : node->children) {
-                string type = "unknown";
                 if (!idNode->children.empty()) {
-                    type = visitExpression(idNode->children[0].get());
+                    visitExpression(idNode->children[0].get());
                 }
-                declareVar(idNode->text, type, idNode->line, idNode->column);
+                declareVar(idNode->text, idNode->line, idNode->column);
             }
             break;
         }
@@ -167,7 +162,7 @@ void SemanticAnalyzer::visitStatement(Node* node) {
             pushScope();
             for (auto& child : node->children) {
                 if (child->kind == NodeKind::Param) {
-                    declareVar(child->text, "unknown", child->line, child->column);
+                    declareVar(child->text, child->line, child->column);
                 } else if (child->kind == NodeKind::Block) {
                     for (auto& stmt : child->children) visitStatement(stmt.get());
                 }
@@ -241,7 +236,7 @@ void SemanticAnalyzer::visitStatement(Node* node) {
             break;
 
         case NodeKind::Continue:
-            if (loopDepth == 0) error(node->line, node->column, "'aghibadh' (continue) used outside a loop");
+            if (loopDepth == 0) error(node->line, node->column, "'aghibad' (continue) used outside a loop");
             break;
 
         default:
@@ -252,110 +247,44 @@ void SemanticAnalyzer::visitStatement(Node* node) {
 }
 
 // ---------------- expressions ----------------
+// Dynamic typing: these checks are purely about validity (is the name
+// declared? does the call have the right arity?), never about type
+// compatibility - a variable's type is only known at runtime now.
 
-string SemanticAnalyzer::visitExpression(Node* node) {
-    if (!node) return "unknown";
+void SemanticAnalyzer::visitExpression(Node* node) {
+    if (!node) return;
 
     switch (node->kind) {
-        case NodeKind::IntLiteral: return "int";
-        case NodeKind::FloatLiteral: return "float";
-        case NodeKind::StringLiteral: return "string";
+        case NodeKind::IntLiteral:
+        case NodeKind::FloatLiteral:
+        case NodeKind::StringLiteral:
+            break;
 
-        case NodeKind::Identifier: {
-            VarSymbol* sym = lookupVar(node->text);
-            if (!sym) {
+        case NodeKind::Identifier:
+            if (!lookupVar(node->text)) {
                 error(node->line, node->column, "use of undeclared identifier '" + node->text + "'");
-                return "unknown";
             }
-            return sym->type;
-        }
+            break;
 
         case NodeKind::Assignment: {
             Node* target = node->children[0].get();
-            string valType = visitExpression(node->children[1].get());
-
-            VarSymbol* sym = lookupVar(target->text);
-            if (!sym) {
+            visitExpression(node->children[1].get());
+            if (!lookupVar(target->text)) {
                 error(target->line, target->column,
                       "assignment to undeclared variable '" + target->text + "'");
-                return valType;
             }
-
-            if (node->text != "=") { // compound assignment: +=, -=, *=, /=, %=
-                if (sym->type != "unknown" && valType != "unknown") {
-                    bool okString = (sym->type == "string" && valType == "string" && node->text == "+=");
-                    if (!okString && (!isNumeric(sym->type) || !isNumeric(valType))) {
-                        error(node->line, node->column,
-                              "invalid operand types for '" + node->text + "': " +
-                              sym->type + " and " + valType);
-                    }
-                }
-            } else if (sym->type == "unknown") {
-                sym->type = valType; // refine type on first real assignment
-            } else if (valType != "unknown" && sym->type != valType) {
-                warn(node->line, node->column,
-                     "assigning " + valType + " to variable '" + target->text +
-                     "' previously inferred as " + sym->type);
-            }
-            return sym->type;
+            break;
         }
 
-        case NodeKind::LogicalOp: {
-            string l = visitExpression(node->children[0].get());
-            string r = visitExpression(node->children[1].get());
-            if (l == "string" || r == "string") {
-                warn(node->line, node->column,
-                     "'" + node->text + "' used with a string operand");
-            }
-            return "int";
-        }
+        case NodeKind::LogicalOp:
+        case NodeKind::BinaryOp:
+            visitExpression(node->children[0].get());
+            visitExpression(node->children[1].get());
+            break;
 
-        case NodeKind::BinaryOp: {
-            string l = visitExpression(node->children[0].get());
-            string r = visitExpression(node->children[1].get());
-            const string& op = node->text;
-
-            bool comparison = (op == "==" || op == "!=" || op == "<" || op == "<=" ||
-                                op == ">" || op == ">=");
-
-            if (l == "unknown" || r == "unknown") return comparison ? "int" : "unknown";
-
-            if (op == "+") {
-                if (l == "string" || r == "string") {
-                    if (l != "string" || r != "string") {
-                        error(node->line, node->column,
-                              "cannot use '+' between string and " + (l == "string" ? r : l) +
-                              " without explicit conversion");
-                    }
-                    return "string";
-                }
-                return (l == "float" || r == "float") ? "float" : "int";
-            }
-
-            bool equalityOp = (op == "==" || op == "!=");
-            if (equalityOp && l == "string" && r == "string") {
-                return "int"; // string equality is valid (compares contents)
-            }
-
-            if (l == "string" || r == "string") {
-                error(node->line, node->column,
-                      "invalid operand types for '" + op + "': " + l + " and " + r);
-                return comparison ? "int" : "unknown";
-            }
-
-            if (comparison) return "int";
-            return (l == "float" || r == "float") ? "float" : "int";
-        }
-
-        case NodeKind::UnaryOp: {
-            string t = visitExpression(node->children[0].get());
-            if (node->text == "!") return "int";
-            if (t != "unknown" && !isNumeric(t)) {
-                error(node->line, node->column,
-                      "invalid operand type for unary '" + node->text + "': " + t);
-            }
-            return t;
-        }
+        case NodeKind::UnaryOp:
+            visitExpression(node->children[0].get());
+            break;
 
         case NodeKind::Call: {
             Node* callee = node->children[0].get();
@@ -379,10 +308,10 @@ string SemanticAnalyzer::visitExpression(Node* node) {
             for (size_t k = 1; k < node->children.size(); k++) {
                 visitExpression(node->children[k].get());
             }
-            return "unknown";
+            break;
         }
 
         default:
-            return "unknown";
+            break;
     }
 }

@@ -6,10 +6,10 @@
 #include <algorithm>
 #include <cctype>
 #include "lexer.h"
-#include "token1.h"
+#include "tokens.h"
 #include "parser.h"
 #include "semantic.h"
-#include "codegen.h"
+#include "code_generator.h"
 #include "color.h"
  
 using namespace std;

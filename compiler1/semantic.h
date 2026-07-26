@@ -14,8 +14,7 @@ struct Diagnostic {
 };
 
 struct VarSymbol {
-    std::string type;   // "int" | "float" | "string" | "unknown"
-    int line, column;
+    int line, column; // dynamic typing: no compile-time type is tracked here
 };
 
 struct FuncSymbol {
@@ -39,7 +38,7 @@ private:
 
     void pushScope();
     void popScope();
-    bool declareVar(const std::string& name, const std::string& type, int line, int col);
+    bool declareVar(const std::string& name, int line, int col);
     VarSymbol* lookupVar(const std::string& name);
 
     void error(int line, int col, const std::string& msg);
@@ -48,7 +47,5 @@ private:
     void collectFunctionSignatures(Node* program);
     void visitStatement(Node* node);
     void visitBlockScoped(Node* block); // pushes its own scope
-    std::string visitExpression(Node* node);
-
-    bool isNumeric(const std::string& type) const;
+    void visitExpression(Node* node);   // dynamic typing: no type is returned, only validity is checked
 };

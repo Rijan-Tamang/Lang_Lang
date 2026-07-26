@@ -35,7 +35,6 @@ void check_format(int argc){ /*to check if the command in the terminal is correc
         }
 }
 
-
 void check_dots(){
         int count_dots = 0;
         for (int i = 0; i < file_name_with_extension.length(); i++){
@@ -54,7 +53,6 @@ void check_dots(){
 
 }
 
-
 void extract_filename(){
         for (int i = 0; i < file_name_with_extension.length(); i++){
                 if (file_name_with_extension[i] != '.'){
@@ -64,7 +62,6 @@ void extract_filename(){
                         break;
         }
 }
-
 
 void extract_file_extension(/*message msg*/){
 
@@ -83,12 +80,7 @@ void extract_file_extension(/*message msg*/){
 	    exit(1);
         }
 //More than 1 dots in file name shows errors
-
 }
-
-
-
-
 
 void read_file() {
 
@@ -107,12 +99,6 @@ void read_file() {
                 store_content += line + "\n";
         }
 }
-
-
-
-
-
-
 
 void main_read_from_file(int argc, char* argv[]){
 	// message msg;
