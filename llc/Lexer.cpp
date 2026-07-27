@@ -124,7 +124,7 @@ Token Lexer::readNumber() {
             if (hasDot) {
                 // e.g. 11.11.11 — second dot is malformed
                 hasError = true;
-                errorMsg = "malformed number: multiple decimal points";
+                errorMsg = "NUMBER MILENA: ek bhanda dherai decinal point xa";
                 num += moveonce();
                 continue;
             }
@@ -132,7 +132,7 @@ Token Lexer::readNumber() {
         } else if (isalpha(c)) {
             // e.g. 21a — letter suffix after digits
             hasError = true;
-            errorMsg = "malformed number: unexpected character '" + string(1, c) + "'";
+            errorMsg = "NUMBER MILENA : '" + string(1, c) + "'","hudaina string ma";
         }
 
         num += moveonce();
@@ -158,7 +158,7 @@ Token Lexer::readString() {
     }
 
     if (see() == '"') moveonce();
-    else return {ERROR, "Unterminated string", startLine, startCol};
+    else return {ERROR, "string banda garnu parxan ta", startLine, startCol};
 
     return {STRING, str, startLine, startCol};
 }
@@ -227,6 +227,6 @@ Token Lexer::readOperator() {
          case ':': return {COLAN, op, startLine, startCol};
 
         default:
-            return {ERROR, "Unknown operator '" + op + "'", startLine, startCol};
+            return {ERROR, "K HO YO OPERATOR? : '" + op + "'", startLine, startCol};
     }
 }

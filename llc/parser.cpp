@@ -198,7 +198,7 @@ NodePtr Parser::declaration() {
     auto decl = make_unique<Node>(NodeKind::VarDecl, "yoho", kw.line, kw.column);
 
     do {
-        const Token& name = expect(IDENTIFIER, "expected identifier after 'yoho'");
+        const Token& name = expect(IDENTIFIER, "'yoho' pachi identifer xaina");
         auto idNode = make_unique<Node>(NodeKind::Identifier, name.value, name.line, name.column);
         if (match(ASSIGNMENT_OP)) {
             idNode->children.push_back(expression());
@@ -206,7 +206,7 @@ NodePtr Parser::declaration() {
         decl->children.push_back(move(idNode));
     } while (match(COMMA));
 
-    expect(SEMICOLAN, "expected ';' after declaration");
+    expect(SEMICOLAN, "chaahiyako ko chai ';' thiyo");
     return decl;
 }
 
@@ -246,35 +246,35 @@ NodePtr Parser::exprStatement() {
     // rather than intentional, so it's rejected here instead of silently
     // accepted.
     if (expr->kind != NodeKind::Assignment && expr->kind != NodeKind::Call) {
-        error(start, "expression statement has no effect - only assignments and function calls are allowed as statements");
+        error(start, "expression statement ma kunai asar xaina- function call wa assignment matra allowed xa");
     }
 
-    expect(SEMICOLAN, "expected ';' after expression");
+    expect(SEMICOLAN, "experession pachi ';' chaahinxa");
     auto node = make_unique<Node>(NodeKind::ExprStatement, "", start.line, start.column);
     node->children.push_back(move(expr));
     return node;
 }
 
 NodePtr Parser::breakStatement() {
-    const Token& kw = expectKeyword("vayo", "expected 'vayo'");
+    const Token& kw = expectKeyword("vayo", "'vayo' ko aasha thiyo");
     expect(SEMICOLAN, "expected ';' after 'vayo'");
     return make_unique<Node>(NodeKind::Break, "vayo", kw.line, kw.column);
 }
 
 NodePtr Parser::continueStatement() {
-    const Token& kw = expectKeyword("aghibadh", "expected 'aghibadh'");
+    const Token& kw = expectKeyword("aghibadh", "'aghibadh' ko aasha thiyo");
     expect(SEMICOLAN, "expected ';' after 'aghibadh'");
     return make_unique<Node>(NodeKind::Continue, "aghibadh", kw.line, kw.column);
 }
 
 NodePtr Parser::emptyStatement() {
-    const Token& t = expect(SEMICOLAN, "expected ';'");
+    const Token& t = expect(SEMICOLAN, "';' ko aasha thiyo");
     return make_unique<Node>(NodeKind::Empty, ";", t.line, t.column);
 }
 
 NodePtr Parser::functionDeclOrDef() {
-    const Token& name = expect(IDENTIFIER, "expected function name");
-    expect(LEFT_PAREN, "expected '(' after function name");
+    const Token& name = expect(IDENTIFIER, "function ko naam ko aasha thiyo");
+    expect(LEFT_PAREN, "function ko naam paxi '(' ko aasha thiyo, after ");
 
     vector<NodePtr> params;
     if (!check(RIGHT_PAREN)) {
@@ -301,15 +301,15 @@ NodePtr Parser::functionDeclOrDef() {
 
 NodePtr Parser::printStatement() {
     const Token& kw = expectKeyword("bhan", "expected 'bhan'");
-    expect(LEFT_PAREN, "expected '(' after 'bhan'");
+    expect(LEFT_PAREN, " 'bhan' paxadi  '(' hunu parxa");
     auto node = make_unique<Node>(NodeKind::Print, "", kw.line, kw.column);
     if (!check(RIGHT_PAREN)) {
         do {
             node->children.push_back(expression());
         } while (match(COMMA));
     }
-    expect(RIGHT_PAREN, "expected ')' to close 'bhan'");
-    expect(SEMICOLAN, "expected ';' after 'bhan(...)'");
+    expect(RIGHT_PAREN, "'bhan' lai close gareko xaina ')' hunu parxa");
+    expect(SEMICOLAN, "'bhan(...)' pachhi ';' ko aasha thiyo" );
     return node;
 }
 
@@ -319,19 +319,19 @@ NodePtr Parser::inputStatement() {
     const Token& prompt = expect(STRING, "expected prompt string in 'sun'");
     auto node = make_unique<Node>(NodeKind::Input, prompt.value, kw.line, kw.column);
     while (match(COMMA)) {
-        const Token& id = expect(IDENTIFIER, "expected identifier in 'sun'");
+        const Token& id = expect(IDENTIFIER, "'sun' ma identifier chhaina");
         node->children.push_back(make_unique<Node>(NodeKind::Identifier, id.value, id.line, id.column));
     }
-    expect(RIGHT_PAREN, "expected ')' to close 'sun'");
-    expect(SEMICOLAN, "expected ';' after 'sun(...)'");
+    expect(RIGHT_PAREN, "'sun' lai close gareko chhain ')' hunu parchha");
+    expect(SEMICOLAN, "'sun(...)' pachhi ';' chhaina");
     return node;
 }
 
 NodePtr Parser::ifStatement() {
-    const Token& kw = expectKeyword("yedi", "expected 'yedi'");
-    expect(LEFT_PAREN, "expected '(' after 'yedi'");
+    const Token& kw = expectKeyword("yedi", "'yedi' ko aasha thiyo");
+    expect(LEFT_PAREN, "'yedi' pachhi '(' chhaina");
     auto cond = expression();
-    expect(RIGHT_PAREN, "expected ')' after condition");
+    expect(RIGHT_PAREN, "condition pachhi ')' chhaina");
     auto thenStmt = statement();
 
     auto node = make_unique<Node>(NodeKind::If, "yedi", kw.line, kw.column);
@@ -340,9 +340,9 @@ NodePtr Parser::ifStatement() {
 
     while (checkKeyword("tesovaye")) {
         advance();
-        expect(LEFT_PAREN, "expected '(' after 'tesovaye'");
+        expect(LEFT_PAREN, "'tesovaye' pachhi '(' chhaina)");
         auto elifCond = expression();
-        expect(RIGHT_PAREN, "expected ')' after 'tesovaye' condition");
+        expect(RIGHT_PAREN, "'tesovaye' condition pachhi ')' chhaina");
         auto elifBody = statement();
         node->elifConds.push_back(move(elifCond));
         node->elifBodies.push_back(move(elifBody));
@@ -356,11 +356,11 @@ NodePtr Parser::ifStatement() {
 }
 
 NodePtr Parser::switchStatement() {
-    const Token& kw = expectKeyword("yochai", "expected 'yochai'");
-    expect(LEFT_PAREN, "expected '(' after 'yochai'");
+    const Token& kw = expectKeyword("yochai", "'yochai' ko aasha thiyo");
+    expect(LEFT_PAREN, "'yochai pachhi '(' chhaina'");
     auto subject = expression();
-    expect(RIGHT_PAREN, "expected ')' after switch expression");
-    expect(LEFT_BRECE, "expected '{' to start switch body");
+    expect(RIGHT_PAREN, "switch expression pachhi ')' chhaina");
+    expect(LEFT_BRECE, "switch body pachhi '{' chhaina");
 
     auto node = make_unique<Node>(NodeKind::Switch, "yochai", kw.line, kw.column);
     node->children.push_back(move(subject));
@@ -376,9 +376,9 @@ NodePtr Parser::switchStatement() {
         } else if (check(IDENTIFIER)) {
             caseNode->children.push_back(make_unique<Node>(NodeKind::Identifier, advance().value, label.line, label.column));
         } else {
-            error("expected INT_NO, FLOAT_NO, or IDENTIFIER as case label");
+            error("case label ma Integer, Float athawa Identifier hunuparne");
         }
-        expect(COLAN, "expected ':' after case label");
+        expect(COLAN, "case label pachhi ':' ko aasha thiyo");
         while (!checkKeyword("yo") && !checkKeyword("abayeiho") && !check(RIGHT_BRECE) && !isAtEnd()) {
             try {
                 caseNode->children.push_back(statement());
@@ -392,7 +392,7 @@ NodePtr Parser::switchStatement() {
     if (matchKeyword("abayeiho")) {
         const Token& dkw = previous();
         auto defNode = make_unique<Node>(NodeKind::Default, "abayeiho", dkw.line, dkw.column);
-        expect(COLAN, "expected ':' after 'abayeiho'");
+        expect(COLAN, "'abayeiho' pachhi ':' ko aasha thiyo");
         while (!check(RIGHT_BRECE) && !isAtEnd()) {
             try {
                 defNode->children.push_back(statement());
@@ -403,18 +403,18 @@ NodePtr Parser::switchStatement() {
         node->children.push_back(move(defNode));
     }
 
-    expect(RIGHT_BRECE, "expected '}' to close switch body");
+    expect(RIGHT_BRECE, "switch body lai '}' le close gareko chhaina");
     return node;
 }
 
 NodePtr Parser::whileStatement() {
     const Token& kw = expectKeyword("jabasamma", "expected 'jabasamma'");
-    expect(LEFT_PAREN, "expected '(' after 'jabasamma'");
+    expect(LEFT_PAREN, "'jabasamma' pachhi '(' chhaina");
     auto cond = expression();
-    expect(RIGHT_PAREN, "expected ')' after while condition");
+    expect(RIGHT_PAREN, "while condition pachhi '(' chhaina");
 
     if (!check(LEFT_BRECE)) {
-        error(peek(), "expected '{' to start 'jabasamma' body");
+        error(peek(), "'jabasamma' body suru garna '{' chhaina");
     }
     auto body = block();
 
@@ -425,13 +425,13 @@ NodePtr Parser::whileStatement() {
 }
 
 NodePtr Parser::doWhileStatement() {
-    const Token& kw = expectKeyword("gar", "expected 'gar'");
+    const Token& kw = expectKeyword("gar", "'gar' ko aasha thiyo");
     auto body = block();
-    expectKeyword("jabasamma", "expected 'jabasamma' after do-block");
-    expect(LEFT_PAREN, "expected '(' after 'jabasamma'");
+    expectKeyword("jabasamma", "gar-block pachhi 'jabasamma' chhaina");
+    expect(LEFT_PAREN, "'jabasamma' pachhi '(' chhaina");
     auto cond = expression();
-    expect(RIGHT_PAREN, "expected ')' after do-while condition");
-    expect(SEMICOLAN, "expected ';' after do-while");
+    expect(RIGHT_PAREN, "gar-jabasamma condition pacchi ')' chhaina");
+    expect(SEMICOLAN, "gar-jabasamma pachhi ';' chhaina");
 
     auto node = make_unique<Node>(NodeKind::DoWhile, "gar", kw.line, kw.column);
     node->children.push_back(move(body));
@@ -440,8 +440,8 @@ NodePtr Parser::doWhileStatement() {
 }
 
 NodePtr Parser::forStatement() {
-    const Token& kw = expectKeyword("ferini", "expected 'ferini'");
-    expect(LEFT_PAREN, "expected '(' after 'ferini'");
+    const Token& kw = expectKeyword("ferini", "'ferini', ko aasha thiyo");
+    expect(LEFT_PAREN, "ferini' pachhi '(' chhaina");
 
     NodePtr init;
     if (check(SEMICOLAN)) {
@@ -455,15 +455,15 @@ NodePtr Parser::forStatement() {
     NodePtr cond;
     if (!check(SEMICOLAN)) cond = expression();
     else cond = make_unique<Node>(NodeKind::Empty, ";", peek().line, peek().column);
-    expect(SEMICOLAN, "expected ';' after for-loop condition");
+    expect(SEMICOLAN, "ferini-loop condition pachhi ';' chhaina");
 
     NodePtr post;
     if (!check(RIGHT_PAREN)) post = expression();
     else post = make_unique<Node>(NodeKind::Empty, ";", peek().line, peek().column);
-    expect(RIGHT_PAREN, "expected ')' after for-loop clauses");
+    expect(RIGHT_PAREN, "expected ')' after ferini-loop clauses pachhi ')' chhaina");
 
     if (!check(LEFT_BRECE)) {
-        error(peek(), "expected '{' to start 'ferini' body");
+        error(peek(), "'ferini' body suru garnu '{' chhaina ");
     }
     auto body = block();
 
@@ -595,7 +595,7 @@ NodePtr Parser::call() {
                 node->children.push_back(expression());
             } while (match(COMMA));
         }
-        expect(RIGHT_PAREN, "expected ')' after call arguments");
+        expect(RIGHT_PAREN, "call arguments pachhi ')' chhaina");
         expr = move(node);
     }
     return expr;
@@ -611,13 +611,13 @@ NodePtr Parser::primary() {
 
     if (match(LEFT_PAREN)) {
         auto expr = expression();
-        expect(RIGHT_PAREN, "expected ')' after expression");
+        expect(RIGHT_PAREN, "expression pachhi ')' chhaina");
         return expr;
     }
 
     if (check(ERROR)) {
-        error(t, "lexical error reached parser: " + (t.errorMsg.empty() ? t.value : t.errorMsg));
+        error(t, "lexical error ra parser ko mel bho: " + (t.errorMsg.empty() ? t.value : t.errorMsg));
     }
 
-    error(t, "expected an expression");
+    error(t, "expression milena hai");
 }

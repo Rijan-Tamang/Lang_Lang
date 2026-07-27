@@ -271,7 +271,7 @@ void SemanticAnalyzer::visitExpression(Node* node) {
             visitExpression(node->children[1].get());
             if (!lookupVar(target->text)) {
                 error(target->line, target->column,
-                      "assignment to undeclared variable '" + target->text + "'");
+                      "declare navako variable ma assign gariyo '" + target->text + "'");
             }
             break;
         }
@@ -294,7 +294,7 @@ void SemanticAnalyzer::visitExpression(Node* node) {
                 auto it = functions.find(callee->text);
                 if (it == functions.end()) {
                     error(callee->line, callee->column,
-                          "call to undeclared function '" + callee->text + "'");
+                          "declare navako function lai call gariyo '" + callee->text + "'");
                 } else if ((size_t)it->second.paramCount != argCount) {
                     error(node->line, node->column,
                           "function '" + callee->text + "' expects " +
