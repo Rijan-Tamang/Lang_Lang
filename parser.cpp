@@ -94,7 +94,7 @@ void Parser::error(const string& message) {
 }
 
 void Parser::error(const Token& at, const string& message) {
-    string full = message + " (got '" + at.value + "')";
+    string full = message + " (' "+at.value+" ' payo)";
     errors.push_back({full, at.line, at.column});
     throw ParseError(full, at.line, at.column);
 }
@@ -194,7 +194,7 @@ NodePtr Parser::statement() {
 }
 
 NodePtr Parser::declaration() {
-    const Token& kw = expectKeyword("yoho", "expected 'yoho'");
+    const Token& kw = expectKeyword("yoho", "'yoho' chaiyeko thiyo");
     auto decl = make_unique<Node>(NodeKind::VarDecl, "yoho", kw.line, kw.column);
 
     do {
@@ -206,7 +206,7 @@ NodePtr Parser::declaration() {
         decl->children.push_back(move(idNode));
     } while (match(COMMA));
 
-    expect(SEMICOLAN, "chaahiyako ko chai ';' thiyo");
+    expect(SEMICOLAN, "chahiyeko chai ';'  thiyo");
     return decl;
 }
 
@@ -220,7 +220,7 @@ NodePtr Parser::block() {
             synchronize();
         }
     }
-    expect(RIGHT_BRECE, "expected '}' to close block");
+    expect(RIGHT_BRECE, "Block banda garna } chahiyeko thiyo.");
     return blk;
 }
 
@@ -230,7 +230,7 @@ NodePtr Parser::returnStatement() {
     if (!check(SEMICOLAN)) {
         node->children.push_back(expression());
     }
-    expect(SEMICOLAN, "expected ';' after return statement");
+    expect(SEMICOLAN, "'firta' pachi ';' chahiyeko thiyo");
     return node;
 }
 
@@ -245,8 +245,9 @@ NodePtr Parser::exprStatement() {
     // almost always a mistake (e.g. writing ("msg"); instead of bhan("msg");)
     // rather than intentional, so it's rejected here instead of silently
     // accepted.
+    system("chcp 65001 > nul");   
     if (expr->kind != NodeKind::Assignment && expr->kind != NodeKind::Call) {
-        error(start, "expression statement ma kunai asar xaina- function call wa assignment matra allowed xa");
+        error(start, u8" तपाईंको कोड अपुरो छ। कृपया कोड पूरा गरेर पुनः प्रयास गर्नुहोस्।");
     }
 
     expect(SEMICOLAN, "experession pachi ';' chaahinxa");
@@ -284,7 +285,7 @@ NodePtr Parser::functionDeclOrDef() {
             params.push_back(make_unique<Node>(NodeKind::Param, pname.value, pkw.line, pkw.column));
         } while (match(COMMA));
     }
-    expect(RIGHT_PAREN, "expected ')' after parameter list");
+    expect(RIGHT_PAREN, "Parameter list pachi ) chahiyeko thiyo.");
 
     if (check(LEFT_BRECE)) {
         auto def = make_unique<Node>(NodeKind::FunctionDef, name.value, name.line, name.column);
@@ -314,14 +315,19 @@ NodePtr Parser::printStatement() {
 }
 
 NodePtr Parser::inputStatement() {
-    const Token& kw = expectKeyword("sun", "expected 'sun'");
-    expect(LEFT_PAREN, "expected '(' after 'sun'");
-    const Token& prompt = expect(STRING, "expected prompt string in 'sun'");
-    auto node = make_unique<Node>(NodeKind::Input, prompt.value, kw.line, kw.column);
-    while (match(COMMA)) {
-        const Token& id = expect(IDENTIFIER, "'sun' ma identifier chhaina");
-        node->children.push_back(make_unique<Node>(NodeKind::Identifier, id.value, id.line, id.column));
-    }
+    const Token& kw = expectKeyword("sun", "chhahiyako 'sun'");
+    expect(LEFT_PAREN, "'sun' pachi '(' chhahinxa");
+    auto node = make_unique<Node>(NodeKind::Input, "", kw.line, kw.column);
+
+    do {
+        const Token& id = expect(
+            IDENTIFIER,""
+        );
+        node->children.push_back(
+            make_unique<Node>(NodeKind::Identifier,id.value,id.line,id.column)
+        );
+    } while (match(COMMA));
+
     expect(RIGHT_PAREN, "'sun' lai close gareko chhain ')' hunu parchha");
     expect(SEMICOLAN, "'sun(...)' pachhi ';' chhaina");
     return node;

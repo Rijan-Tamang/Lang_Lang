@@ -11,7 +11,8 @@
 #include "semantic.h"
 #include "code_generator.h"
 #include "color.h"
- 
+//for nepali text
+
 using namespace std;
 extern string file_name_with_extension;
 extern string file_name_without_extension;

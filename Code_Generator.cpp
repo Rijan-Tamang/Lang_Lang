@@ -240,7 +240,7 @@ void CodeGenerator::emitStatement(Node* node, ostringstream& out, int indent) {
             break; // signature already emitted as a prototype
 
         case NodeKind::FunctionDef:
-            throw runtime_error("codegen: nested function definitions are not supported");
+            throw runtime_error("Codegen: arko function bhitra function define garna mildaina.");
 
         case NodeKind::If: {
             out << pad << "if (truthy(" << emitExpr(node->children[0].get()) << ")) {\n";

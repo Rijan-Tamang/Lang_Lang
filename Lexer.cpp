@@ -1,6 +1,6 @@
 #include "lexer.h"
 #include "tokens.h"
-
+#include "color.h"
 using namespace std;
 
 extern string store_content;
@@ -124,7 +124,8 @@ Token Lexer::readNumber() {
             if (hasDot) {
                 // e.g. 11.11.11 — second dot is malformed
                 hasError = true;
-                errorMsg = "NUMBER MILENA: ek bhanda dherai decinal point xa";
+                
+                errorMsg = string(RED)+"NUMBER MILENA"+RESET+" : ek bhanda dherai decinal point xa";
                 num += moveonce();
                 continue;
             }
@@ -132,7 +133,7 @@ Token Lexer::readNumber() {
         } else if (isalpha(c)) {
             // e.g. 21a — letter suffix after digits
             hasError = true;
-            errorMsg = "NUMBER MILENA : '" + string(1, c) + "'","hudaina string ma";
+            errorMsg = string(RED)+"NUMBER MILENA"+RESET +" : " + string(1, c) + "'","hudaina string ma";
         }
 
         num += moveonce();
@@ -147,18 +148,46 @@ Token Lexer::readNumber() {
 }
 
 Token Lexer::readString() {
-    string str;
     int startLine = line;
     int startCol = col + 1;
 
-    moveonce(); // skip "
+    moveonce(); // skip opening "
 
-    while (see() != '"' && see() != '\0') {
-        str += moveonce();
+    std::string str;
+    bool escape = false;
+
+    while (true) {
+        char c = see();
+        if (c == '\0') {
+            // unterminated string
+            return {ERROR, "string close garnu parxan ta", startLine, startCol};
+        }
+        if (c == '"' && !escape) {
+            moveonce(); // consume closing "
+            break;
+        }
+        moveonce(); // consume the current character
+        if (escape) {
+            // handle escape sequence
+            switch (c) {
+                case 'n':  str += '\n'; break;
+                case 't':  str += '\t'; break;
+                case 'r':  str += '\r'; break;
+                case '\\': str += '\\'; break;
+                case '"':  str += '"';  break;
+                default:
+                    // unknown escape: keep both characters (or you could error)
+                    str += '\\';
+                    str += c;
+                    break;
+            }
+            escape = false;
+        } else if (c == '\\') {
+            escape = true;
+        } else {
+            str += c;
+        }
     }
-
-    if (see() == '"') moveonce();
-    else return {ERROR, "string banda garnu parxan ta", startLine, startCol};
 
     return {STRING, str, startLine, startCol};
 }
@@ -204,11 +233,11 @@ Token Lexer::readOperator() {
             return {GREATER_OP, op , startLine, startCol};
         case '&':
             if (b == '&') { op += moveonce(); return {AND_OP, op, startLine, startCol}; }
-            return {ERROR, "Unknown operator '" + op + "'", startLine, startCol};
+            return {ERROR, "operator milena '" + op + "'", startLine, startCol};
 
         case '|':
             if (b == '|') { op += moveonce(); return {OR_OP, op, startLine, startCol}; }
-            return {ERROR, "Unknown operator '" + op + "'", startLine, startCol};
+            return {ERROR, "operator milena '" + op + "'", startLine, startCol};
 
         case '!':
             if (b == '=') { op += moveonce(); return {NOT_EQUAL_OP, op, startLine, startCol}; }

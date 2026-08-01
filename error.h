@@ -5,22 +5,16 @@
 #include <cstdlib>
 #include "color.h"
 
-// #define RESET   "\033[0m"
-// #define RED     "\033[31m"
-// #define YELLOW  "\033[33m"
-// #define BOLD    "\033[1m"
-
-
 using namespace std;
 
 class message{
     public:
     void Error(std::string errmsg){
-        cerr<<BOLD<<"ERROR : "<<RESET<<RED<<errmsg<<RESET<<endl;
+        cerr<<BOLD<<RED<<"ERROR : "<<RESET<<errmsg<<RESET<<endl;
     }
     
     void Warn(std::string warnmsg){
-        cerr<<BOLD<<"WARNING : "<<RESET<<YELLOW<<warnmsg<<RESET<<endl;
+        cerr<<BOLD<<YELLOW<<"WARNING : "<<RESET<<warnmsg<<RESET<<endl;
     }
 };
 

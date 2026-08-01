@@ -1,8 +1,5 @@
 #include "semantic.h"
-
 using namespace std;
-
-// ---------------- scope helpers ----------------
 
 void SemanticAnalyzer::pushScope() {
     scopes.emplace_back();
@@ -15,7 +12,7 @@ void SemanticAnalyzer::popScope() {
 bool SemanticAnalyzer::declareVar(const string& name, int line, int col) {
     auto& current = scopes.back();
     if (current.count(name)) {
-        error(line, col, "redeclaration of variable '" + name + "' in the same scope");
+        error(line, col, "Yatai scope ma variable '" + name + "' feri declare garna mildaina.");
         return false;
     }
     current[name] = VarSymbol{line, col};
@@ -38,7 +35,7 @@ void SemanticAnalyzer::warn(int line, int col, const string& msg) {
     diags.push_back({DiagSeverity::Warning, msg, line, col});
 }
 
-// ---------------- entry point ----------------
+
 
 vector<Diagnostic> SemanticAnalyzer::analyze(Node* program) {
     diags.clear();
@@ -73,12 +70,12 @@ void SemanticAnalyzer::collectFunctionSignatures(Node* program) {
             } else {
                 if (it->second.paramCount != paramCount) {
                     warn(child->line, child->column,
-                         "function '" + child->text + "' redeclared with a different parameter count");
+                         "Function '" + child->text + "' farak parameter sankhya sanga feri declare gareko chha.");
                 }
                 if (isDef) {
                     if (it->second.defined) {
                         error(child->line, child->column,
-                              "function '" + child->text + "' already defined");
+                              "Function '" + child->text + "' pahilai define bhayeko chha.");
                     }
                     it->second.defined = true;
                     it->second.line = child->line;
@@ -117,7 +114,7 @@ void SemanticAnalyzer::visitStatement(Node* node) {
 
         case NodeKind::Return:
             if (functionDepth == 0) {
-                error(node->line, node->column, "'firta' (return) used outside a function");
+                error(node->line, node->column, "'firta' function bahira prayog garna mildaina.");
             }
             if (!node->children.empty()) visitExpression(node->children[0].get());
             break;
@@ -137,7 +134,7 @@ void SemanticAnalyzer::visitStatement(Node* node) {
             for (auto& idNode : node->children) {
                 if (!lookupVar(idNode->text)) {
                     error(idNode->line, idNode->column,
-                          "'sun' target '" + idNode->text + "' is not declared");
+                          "'sun' ko variable '" + idNode->text + "' declare gariyako xaina");
                 }
             }
             break;
@@ -145,8 +142,8 @@ void SemanticAnalyzer::visitStatement(Node* node) {
         case NodeKind::FunctionDecl:
             if (functionDepth > 0 || scopes.size() > 1) {
                 error(node->line, node->column,
-                      "nested function declarations are not supported - '" + node->text +
-                      "' must be declared at the top level");
+                      "Function '" + node->text +
+                    "' lai arko function bhitra declare garna mildaina. Yo top level ma declare garnu parchha.");
             }
             // signature already recorded in the pre-pass; nothing else to check here.
             break;
@@ -154,8 +151,8 @@ void SemanticAnalyzer::visitStatement(Node* node) {
         case NodeKind::FunctionDef: {
             if (functionDepth > 0 || scopes.size() > 1) {
                 error(node->line, node->column,
-                      "nested function definitions are not supported - '" + node->text +
-                      "' must be defined at the top level");
+                      "Function '" + node->text +
+                    "' lai arko function bhitra declare garna mildaina. Yo top level ma declare garnu parchha.");
                 break; // don't also process its body as if it were valid
             }
             functionDepth++;
@@ -192,7 +189,7 @@ void SemanticAnalyzer::visitStatement(Node* node) {
                     Node* label = clause->children[0].get();
                     if (label->kind == NodeKind::Identifier && !lookupVar(label->text)) {
                         error(label->line, label->column,
-                              "case label '" + label->text + "' is not a declared identifier");
+                              "Case label '" + label->text + "' declare gareko identifier haina.");
                     }
                     for (size_t s = 1; s < clause->children.size(); s++) {
                         visitStatement(clause->children[s].get());
@@ -262,7 +259,7 @@ void SemanticAnalyzer::visitExpression(Node* node) {
 
         case NodeKind::Identifier:
             if (!lookupVar(node->text)) {
-                error(node->line, node->column, "use of undeclared identifier '" + node->text + "'");
+                error(node->line, node->column, "Declare nagareko identifier '" + node->text + "' prayog gareko chha.");
             }
             break;
 
